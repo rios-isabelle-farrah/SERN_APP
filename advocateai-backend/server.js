@@ -28,6 +28,9 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json()); // Allows JSON request bodies
 
+
+
+
 // Routes
 app.get("/home", (req, res) => {
     res.send("Welcome to the Home Page!");
@@ -52,6 +55,15 @@ app.get("/section-three", (req, res) => {
 app.get("/section-four", (req, res) => {
     res.send("Welcome to Section Four!");
 });
+
+
+
+app.post("/section-one", (req, res) => {
+    const formData = req.body; // Get form data from the request
+    console.log("Received data:", formData); // Log it to check
+    res.json({ message: "Data received successfully!", data: formData });
+});
+
 
 // Start the server
 app.listen(PORT, () => {
