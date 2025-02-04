@@ -70,6 +70,19 @@ app.post("/section-two", (req, res) => {
     res.json({ message: "Section Two data received successfully!", data: formData });
 });
 
+app.post("/section-three", (req, res) => {
+    const formData = req.body;
+    console.log("Received Section Three data:", formData);
+    res.json({ message: "Section Three data received successfully!", data: formData });
+});
+
+app.post("/section-four", (req, res) => {
+    const formData = req.body;
+    console.log("Received Section Four data:", formData);
+    res.json({ message: "Section Four data received successfully!", data: formData });
+});
+
+
 
 // Start the server
 app.listen(PORT, () => {
