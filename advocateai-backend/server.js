@@ -64,6 +64,12 @@ app.post("/section-one", (req, res) => {
     res.json({ message: "Data received successfully!", data: formData });
 });
 
+app.post("/section-two", (req, res) => {
+    const formData = req.body;
+    console.log("Received Section Two data:", formData);
+    res.json({ message: "Section Two data received successfully!", data: formData });
+});
+
 
 // Start the server
 app.listen(PORT, () => {
