@@ -1,27 +1,8 @@
 const db = require("./database");
-
-// const express = require("express");
-// const cors = require("cors");
-
-// const app = express();
-// const PORT = process.env.PORT || 5000;
-
-// // Middleware
-// app.use(cors());
-// app.use(express.json()); // Allows JSON request bodies
-
-// // Basic test route
-// app.get("/", (req, res) => {
-//     res.send("Express server is running!");
-// });
-
-// // Start the server
-// app.listen(PORT, () => {
-//     console.log(`Server running on http://localhost:${PORT}`);
-// });
-
 const express = require("express");
 const cors = require("cors");
+const parentRoutes = require("./routes/parentRoutes");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
