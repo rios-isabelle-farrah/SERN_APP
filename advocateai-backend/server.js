@@ -1,3 +1,5 @@
+const db = require("./database");
+
 // const express = require("express");
 // const cors = require("cors");
 
@@ -81,7 +83,61 @@ app.post("/section-four", (req, res) => {
     console.log("Received Section Four data:", formData);
     res.json({ message: "Section Four data received successfully!", data: formData });
 });
+// Backend API Route to Store Parent Info 
+app.post("/parent-info", (req, res) => {
+    const {
+        fullName,
+        address,
+        phoneNumber,
+        cellPhone,
+        emailAddress,
+        emailNotice,
+        primaryLanguage,
+        interpreterNeeded,
+        signLanguageInterpreter,
+        relationshipToStudent
+    } = req.body;
 
+    const sql = `
+        INSERT INTO parent_info 
+        (fullName, address, phoneNumber, cellPhone, emailAddress, emailNotice, primaryLanguage, interpreterNeeded, signLanguageInterpreter, relationshipToStudent) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(
+        sql,
+        [fullName, address, phoneNumber, cellPhone, emailAddress, emailNotice ? 1 : 0, primaryLanguage, interpreterNeeded, signLanguageInterpreter, relationshipToStudent],
+        function (err) {
+            if (err) {
+                console.error("❌ Error saving parent info:", err.message);
+                res.status(500).json({ message: "Database error", error: err.message });
+            } else {
+                console.log("✅ Parent info saved with ID:", this.lastID);
+                res.json({ message: "Parent info submitted successfully!", id: this.lastID });
+            }
+        }
+    );
+});
+
+
+
+
+
+
+// route to retrieve stored parent info
+app.get("/parent-info", (req, res) => {
+    const sql = "SELECT * FROM parent_info";
+
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            console.error("❌ Error fetching parent info:", err.message);
+            res.status(500).json({ message: "Database error", error: err.message });
+        } else {
+            console.log("✅ Retrieved parent info:", rows);
+            res.json(rows);
+        }
+    });
+});
 
 
 // Start the server
