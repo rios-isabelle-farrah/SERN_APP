@@ -3,7 +3,7 @@ const db = require("../database"); // Import database connection
 const router = express.Router();
 
 // Create Parent Info (POST /parent-info)
-router.post("/", (req, res) => {
+router.post("/section-one", (req, res) => {
     const {
         fullName, address, phoneNumber, cellPhone, emailAddress,
         emailNotice, primaryLanguage, interpreterNeeded, signLanguageInterpreter,
