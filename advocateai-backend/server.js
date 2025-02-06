@@ -60,11 +60,56 @@ app.get("/section-four", (req, res) => {
 
 
 
+// app.post("/section-one", (req, res) => {
+//     const formData = req.body; // Get form data from the request
+//     console.log("Received data:", formData); // Log it to check
+//     res.json({ message: "Data received successfully!", data: formData });
+// });
+
+
+
+//-code to make sure section one saves data
+
 app.post("/section-one", (req, res) => {
-    const formData = req.body; // Get form data from the request
-    console.log("Received data:", formData); // Log it to check
-    res.json({ message: "Data received successfully!", data: formData });
+    const {
+        fullName,
+        address,
+        phoneNumber,
+        cellPhone,
+        emailAddress,
+        emailNotice,
+        primaryLanguage,
+        interpreterNeeded,
+        signLanguageInterpreter,
+        relationshipToStudent
+    } = req.body;
+
+    const sql = `
+        INSERT INTO parent_info 
+        (fullName, address, phoneNumber, cellPhone, emailAddress, emailNotice, 
+         primaryLanguage, interpreterNeeded, signLanguageInterpreter, relationshipToStudent) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.run(
+        sql,
+        [fullName, address, phoneNumber, cellPhone, emailAddress, emailNotice ? 1 : 0,
+         primaryLanguage, interpreterNeeded, signLanguageInterpreter, relationshipToStudent],
+        function (err) {
+            if (err) {
+                console.error("❌ Error saving Section One data:", err.message);
+                res.status(500).json({ message: "Database error", error: err.message });
+            } else {
+                console.log("✅ Section One data saved with ID:", this.lastID);
+                res.json({ message: "Section One submitted successfully!", id: this.lastID });
+            }
+        }
+    );
 });
+
+
+
+
 
 app.post("/section-two", (req, res) => {
     const formData = req.body;
@@ -135,6 +180,80 @@ app.get("/parent-info", (req, res) => {
         } else {
             console.log("✅ Retrieved parent info:", rows);
             res.json(rows);
+        }
+    });
+});
+
+// get single id 
+app.get("/parent-info/:id", (req, res) => {
+    const { id } = req.params;
+    const sql = "SELECT * FROM parent_info WHERE id = ?";
+
+    db.get(sql, [id], (err, row) => {
+        if (err) {
+            console.error("❌ Error fetching parent info by ID:", err.message);
+            res.status(500).json({ message: "Database error", error: err.message });
+        } else if (!row) {
+            res.status(404).json({ message: "Parent info not found" });
+        } else {
+            console.log("✅ Retrieved parent info by ID:", row);
+            res.json(row);
+        }
+    });
+});
+//put route to update info
+app.put("/parent-info/:id", (req, res) => {
+    const { id } = req.params;
+    const {
+        fullName, address, phoneNumber, cellPhone, emailAddress,
+        emailNotice, primaryLanguage, interpreterNeeded, signLanguageInterpreter,
+        relationshipToStudent
+    } = req.body;
+
+    const sql = `
+        UPDATE parent_info 
+        SET fullName = ?, address = ?, phoneNumber = ?, cellPhone = ?, emailAddress = ?, 
+            emailNotice = ?, primaryLanguage = ?, interpreterNeeded = ?, signLanguageInterpreter = ?, 
+            relationshipToStudent = ?
+        WHERE id = ?
+    `;
+
+
+
+
+    db.run(
+        sql,
+        [fullName, address, phoneNumber, cellPhone, emailAddress, emailNotice ? 1 : 0,
+         primaryLanguage, interpreterNeeded, signLanguageInterpreter, relationshipToStudent, id],
+        function (err) {
+            if (err) {
+                console.error("❌ Error updating parent info:", err.message);
+                res.status(500).json({ message: "Database error", error: err.message });
+            } else if (this.changes === 0) {
+                res.status(404).json({ message: "Parent info not found" });
+            } else {
+                console.log("✅ Parent info updated for ID:", id);
+                res.json({ message: "Parent info updated successfully!" });
+            }
+        }
+    );
+});
+
+
+//delete parent info
+app.delete("/parent-info/:id", (req, res) => {
+    const { id } = req.params;
+    const sql = "DELETE FROM parent_info WHERE id = ?";
+
+    db.run(sql, [id], function (err) {
+        if (err) {
+            console.error("❌ Error deleting parent info:", err.message);
+            res.status(500).json({ message: "Database error", error: err.message });
+        } else if (this.changes === 0) {
+            res.status(404).json({ message: "Parent info not found" });
+        } else {
+            console.log("✅ Deleted parent info with ID:", id);
+            res.json({ message: "Parent info deleted successfully!" });
         }
     });
 });
