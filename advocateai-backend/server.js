@@ -6,6 +6,9 @@ const express = require("express");
 const cors = require("cors");
 const parentRoutes = require("./routes/parentRoutes"); // Import parent routes
 const childRoutes = require("./routes/childRoutes"); // Import parent routes
+const allCaseInfoRoutes = require("./routes/allCaseInfoRoutes"); // Import new route
+
+
 const db = require("./database"); // Import database connection
 
 const app = express();
@@ -17,6 +20,10 @@ app.use(express.json()); // Allows JSON request bodies
 
 // ✅ Use Parent Routes
 app.use("/parent-info", parentRoutes);
+app.use("/child-info", childRoutes);
+app.use("/all-case-info", allCaseInfoRoutes); 
+
+
 
 // ✅ Basic Test Route
 app.get("/", (req, res) => {
@@ -31,45 +38,7 @@ app.get("/section-two", (req, res) => res.send("Welcome to Section Two!"));
 app.get("/section-three", (req, res) => res.send("Welcome to Section Three!"));
 app.get("/section-four", (req, res) => res.send("Welcome to Section Four!"));
 
-// ✅ Section One - Save Data
-// app.post("/section-one", (req, res) => {
-//     const {
-//         fullName,
-//         address,
-//         phoneNumber,
-//         cellPhone,
-//         emailAddress,
-//         emailNotice,
-//         primaryLanguage,
-//         interpreterNeeded,
-//         signLanguageInterpreter,
-//         relationshipToStudent
-//     } = req.body;
 
-//     const sql = `
-//         INSERT INTO parent_info 
-//         (fullName, address, phoneNumber, cellPhone, emailAddress, emailNotice, 
-//          primaryLanguage, interpreterNeeded, signLanguageInterpreter, relationshipToStudent) 
-//         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-//     `;
-
-//     db.run(
-//         sql,
-//         [fullName, address, phoneNumber, cellPhone, emailAddress, emailNotice ? 1 : 0,
-//          primaryLanguage, interpreterNeeded, signLanguageInterpreter, relationshipToStudent],
-//         function (err) {
-//             if (err) {
-//                 console.error("❌ Error saving Section One data:", err.message);
-//                 res.status(500).json({ message: "Database error", error: err.message });
-//             } else {
-//                 console.log("✅ Section One data saved with ID:", this.lastID);
-//                 res.json({ message: "Section One submitted successfully!", id: this.lastID });
-//             }
-//         }
-//     );
-// });
-
-// ✅ Section Form Submission (Just Logging Data for Now)
 app.post("/section-two", (req, res) => {
     console.log("Received Section Two data:", req.body);
     res.json({ message: "Section Two data received successfully!", data: req.body });
